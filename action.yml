@@ -20,7 +20,6 @@ runs:
   using: "composite"
   steps:
     - name: Install Python
-      shell: bash
       uses: actions/setup-python@v4
       with: 
         python-verions: '3.11'
