@@ -19,4 +19,21 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: ./.github/workflows/openapi-check.yml
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with: 
+        python-verions: '3.11'
+    - name: Install and build
+      run: pip install .
+
+    - name: Check OpenAPI changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python -m openapi_change_checker check \
+          --spec-source ${{ inputs.spec_source || 'static' }} \
+          --fastapi-app ${{ inputs.fastapi_app || '' }} \
+          --openapi-file ${{ inputs.openapi_file || 'openapi.json' }} \
+          --consumers-config ${{ inputs.consumers_config || '' }} \
+          --repo ${{ github.repository }} \
+          --pr ${{ github.event.pull_request.number
