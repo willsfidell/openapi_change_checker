@@ -17,7 +17,7 @@ inputs:
     required: false
 
 runs:
-  using: "ubuntu-latest"
+  using: "composite"
   steps:
     - name: Install Python
       uses: actions/setup-python@v4
@@ -27,6 +27,9 @@ runs:
       run: pip install .
 
     - name: Check OpenAPI changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: bash
       run: |
         python -m openapi_change_checker check \
           --spec-source ${{ inputs.spec_source || 'static' }} \
@@ -34,4 +37,4 @@ runs:
           --openapi-file ${{ inputs.openapi_file || 'openapi.json' }} \
           --consumers-config ${{ inputs.consumers_config || '' }} \
           --repo ${{ github.repository }} \
-          --pr ${{ github.event.pull_request.number
+          --pr ${{ github.event.pull_request.number }}
