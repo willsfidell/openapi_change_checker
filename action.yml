@@ -20,16 +20,17 @@ runs:
   using: "composite"
   steps:
     - name: Install Python
+      shell: bash
       uses: actions/setup-python@v4
       with: 
         python-verions: '3.11'
     - name: Install and build
+      shell: bash
       run: pip install .
-
     - name: Check OpenAPI changes
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: bash
       run: |
         python -m openapi_change_checker check \
           --spec-source ${{ inputs.spec_source || 'static' }} \
