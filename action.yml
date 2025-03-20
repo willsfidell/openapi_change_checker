@@ -15,7 +15,9 @@ inputs:
   consumers_config:
     description: 'Path to consumers configuration file'
     required: false
-
+  token:
+    description: 'A Github token'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -29,7 +31,7 @@ runs:
     - name: Check OpenAPI changes
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         python -m openapi_change_checker check \
           --spec-source ${{ inputs.spec_source || 'static' }} \
