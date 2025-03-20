@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openapi-change-checker"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Wills Fidell", email = "wills@endeavourcode.co.uk" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [                                                                
+    "pyyaml>=6.0",                                                              
+    "deepdiff>=6.3",                                                            
+    "pygithub>=2.1",                                                            
+    "gitpython>=3.1",                                                           
+    "fastapi>=0.100.0",  # For testing and spec generation                      
+]                                                                               
+
+[project.urls]
+Documentation = "https://github.com/Wills Fidell/openapi-change-checker#readme"
+Issues = "https://github.com/Wills Fidell/openapi-change-checker/issues"
+Source = "https://github.com/Wills Fidell/openapi-change-checker"
+
+[tool.hatch.version]
+path = "src/openapi_change_checker/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/openapi_change_checker tests}"
+
+[tool.coverage.run]
+source_pkgs = ["openapi_change_checker", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/openapi_change_checker/__about__.py",
+]
+
+[tool.coverage.paths]
+openapi_change_checker = ["src/openapi_change_checker", "*/openapi-change-checker/src/openapi_change_checker"]
+tests = ["tests", "*/openapi-change-checker/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
