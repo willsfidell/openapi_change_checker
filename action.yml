@@ -25,6 +25,9 @@ runs:
       uses: actions/setup-python@v4
       with: 
         python-version: '3.11'
+    - name: Where are we
+      shell: bash
+      run: pwd && ls 
     - name: Install and build
       shell: bash
       run: pip install .
