@@ -31,9 +31,9 @@ def parse_args() -> argparse.Namespace:
         "--openapi-file",
         help="Path to static OpenAPI spec file (required if spec_source is static)",
     )
-    parser.add_argument(
-        "--consumers-config", help="Path to consumers configuration file"
-    )
+    # parser.add_argument(
+    #     "--consumers-config", help="Path to consumers configuration file"
+    # )
     parser.add_argument("--repo", required=True, help="GitHub repository (owner/repo)")
     parser.add_argument("--pr", type=int, required=True, help="Pull request number")
 
@@ -86,12 +86,12 @@ def main() -> int:
 
             # Load consumer configs if provided
             consumer_impacts = None
-            if args.consumers_config:
-                consumers = ConsumerConfigLoader.load_from_file(
-                    Path(args.consumers_config)
-                )
-                analyzer = ImpactAnalyzer(comparison, consumers)
-                consumer_impacts = analyzer.analyze_consumer_impacts()
+            # if args.consumers_config:
+            #     consumers = ConsumerConfigLoader.load_from_file(
+            #         Path(args.consumers_config)
+            #     )
+            #     analyzer = ImpactAnalyzer(comparison, consumers)
+            #     consumer_impacts = analyzer.analyze_consumer_impacts()
 
             # Generate report
             report = MarkdownReport(comparison, consumer_impacts)
