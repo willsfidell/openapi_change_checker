@@ -34,6 +34,8 @@ runs:
       shell: bash
       run: |
         pip install ${{ github.workspace }}/occ
+    - name: checkout action code
+      uses: actions/checkout@v4
     - name: Show me the money
       shell: bash
       run: |
