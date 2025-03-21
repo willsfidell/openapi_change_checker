@@ -1,7 +1,9 @@
 import importlib.util
 import os
+import shutil
 import sys
 import tempfile
+import uuid
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -70,29 +72,31 @@ class FastAPISpecHandler(SpecHandler):
 
         reporter = GitHubPRReporter(self.github_token, self.repo_name)
 
-        # Get the app file from the base branch
-        base_app_content = reporter.get_base_branch_file(
-            str(self.app_path.relative_to(Path.cwd()))
-        )
-        if not base_app_content:
-            return None
-
-        # Write to temporary file
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
-            tmp.write(base_app_content)
-            tmp_path = Path(tmp.name)
+        # Create a temporary directory with UUID
+        temp_dir = Path(tempfile.gettempdir()) / f"fastapi-spec-{uuid.uuid4()}"
+        temp_dir.mkdir(exist_ok=True)
 
         try:
+            # Check out the complete base branch into the temp directory
+            reporter.checkout_base_branch(str(temp_dir))
+
+            # Construct the full path in the temp directory
+            temp_app_path = temp_dir / self.app_path
+
+            if not temp_app_path.exists():
+                return None
+
             # Load the app and get spec
-            app = self._load_fastapi_app(tmp_path)
+            app = self._load_fastapi_app(temp_app_path)
             spec = app.openapi()
 
             if not self.validate_spec(spec):
                 return None
 
             return spec
-        except Exception:
+        except Exception as e:
+            print(f"Error getting previous spec: {e}")
             return None
         finally:
-            # Clean up temporary file
-            os.unlink(tmp_path)
+            # Clean up temporary directory
+            shutil.rmtree(temp_dir, ignore_errors=True)

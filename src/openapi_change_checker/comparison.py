@@ -19,7 +19,7 @@ class SpecComparison:
             for path in self._diff["dictionary_item_added"]:
                 if path.startswith("root['paths']"):
                     # Extract the actual path from the DeepDiff path
-                    endpoint = path.split("']['")[2].rstrip("']")
+                    endpoint = path.split("']['")[1].rstrip("']")
                     new_paths.add(endpoint)
 
         return sorted(new_paths)
@@ -33,7 +33,7 @@ class SpecComparison:
             for path in self._diff["dictionary_item_removed"]:
                 if path.startswith("root['paths']"):
                     # Extract the actual path from the DeepDiff path
-                    endpoint = path.split("']['")[2].rstrip("']")
+                    endpoint = path.split("']['")[1].rstrip("']")
                     removed_paths.add(endpoint)
 
         return sorted(removed_paths)
@@ -47,7 +47,7 @@ class SpecComparison:
             for path, change in self._diff["values_changed"].items():
                 if path.startswith("root['paths']"):
                     parts = path.split("']['")
-                    endpoint = parts[2]
+                    endpoint = parts[1]
                     if endpoint not in modified_paths:
                         modified_paths[endpoint] = {}
                     # Add the change details

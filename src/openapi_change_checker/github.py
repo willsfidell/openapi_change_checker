@@ -1,4 +1,6 @@
+import os
 from typing import Optional
+import subprocess
 
 from github import Github
 from github.PullRequest import PullRequest
@@ -10,6 +12,7 @@ class GitHubPRReporter:
     def __init__(self, token: str, repo_name: str):
         self.gh = Github(token)
         self.repo = self.gh.get_repo(repo_name)
+        self.token = token
 
     def post_report(self, pr_number: int, report: str) -> None:
 
@@ -33,9 +36,29 @@ class GitHubPRReporter:
         else:
             pr.create_issue_comment(report)
 
-    def get_base_branch_file(self, path: str) -> Optional[str]:
+
+    def checkout_base_branch(self, target_dir: str) -> None:
+        """Check out the base branch into the specified directory.
+        
+        Args:
+            target_dir: Directory where the base branch should be checked out
+        """
         try:
-            content = self.repo.get_contents(path)
-            return content.decoded_content.decode("utf-8")
-        except Exception:
-            return None
+            # Get the clone URL with authentication
+            clone_url = self.repo.clone_url.replace(
+                "https://", f"https://{self.token}@"
+            )
+            
+            # Get the default branch name
+            default_branch = self.repo.default_branch
+            
+            # Clone the repository and checkout the base branch
+            subprocess.run(
+                ["git", "clone", "--depth", "1", "--branch", default_branch, clone_url, target_dir],
+                check=True,
+                capture_output=True,
+            )
+        except subprocess.CalledProcessError as e:
+            raise ValueError(f"Error checking out base branch: {e.stderr.decode()}")
+        except Exception as e:
+            raise ValueError(f"Error checking out base branch: {e}")

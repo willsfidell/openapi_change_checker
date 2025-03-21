@@ -103,10 +103,6 @@ def main() -> int:
             )
             reporter.post_report(args.pr, report_content)
 
-            # Store current spec if using FastAPI
-            if args.spec_source == "fastapi":
-                handler.store_spec(current_spec)
-
             return 0
 
     except Exception as e:
