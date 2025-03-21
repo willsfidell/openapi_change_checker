@@ -78,6 +78,16 @@ class MarkdownReport:
 
         return "\n".join(summary)
 
+    def _format_parameter(self, param: List[Dict]) -> str:
+        """Format a parameter dictionary into a descriptive string."""
+        print(type(param))
+        params = []
+        for i in param:
+            params.append(f"*{i['name']}* in *{i['in']}* of type *{i['schema']}* is *{'not ' if not i['required'] else ''}required* and *can{'not' if not i['nullable'] else ''} be null*")
+
+        return ', '.join(params)
+
+
     def _generate_changes_section(self) -> str:
 
         sections = ["## Detailed Changes", ""]
@@ -103,9 +113,9 @@ class MarkdownReport:
         if modified:
             sections.append("### Modified Endpoints")
             for path, changes in modified:
-                is_breaking = self.comparison.is_breaking_change(path, changes)
+                is_breaking = False # self.comparison.is_breaking_change(path, changes)
                 symbol = "⚠️" if is_breaking else "📝"
-                sections.append(f"#### {symbol} `{path}`")
+                sections.append(f"- {symbol} `{path}`")
 
                 # Group changes by category
                 param_changes = {}
@@ -125,26 +135,26 @@ class MarkdownReport:
                     sections.append("\nParameter Changes:")
                     for path, details in param_changes.items():
                         sections.append(f"- {path}")
-                        sections.append(f"  - Old: ```{details['old']}```")
-                        sections.append(f"  - New: ```{details['new']}```")
+                        sections.append(f"  - Old: ```{self._format_parameter(details['previous'])}```")
+                        sections.append(f"  - New: ```{self._format_parameter(details['current'])}```")
 
-                # Response changes
-                if response_changes:
-                    sections.append("\nResponse Changes:")
-                    for path, details in response_changes.items():
-                        sections.append(f"- {path}")
-                        sections.append(f"  - Old: ```{details['old']}```")
-                        sections.append(f"  - New: ```{details['new']}```")
+        #         # Response changes
+        #         if response_changes:
+        #             sections.append("\nResponse Changes:")
+        #             for path, details in response_changes.items():
+        #                 sections.append(f"- {path}")
+        #                 sections.append(f"  - Old: ```{details['old']}```")
+        #                 sections.append(f"  - New: ```{details['new']}```")
 
-                # Other changes
-                if other_changes:
-                    sections.append("\nOther Changes:")
-                    for path, details in other_changes.items():
-                        sections.append(f"- {path}")
-                        sections.append(f"  - Old: ```{details['old']}```")
-                        sections.append(f"  - New: ```{details['new']}```")
+        #         # Other changes
+        #         if other_changes:
+        #             sections.append("\nOther Changes:")
+        #             for path, details in other_changes.items():
+        #                 sections.append(f"- {path}")
+        #                 sections.append(f"  - Old: ```{details['old']}```")
+        #                 sections.append(f"  - New: ```{details['new']}```")
 
-                sections.append("")
+        #         sections.append("")
 
         return "\n".join(sections)
 

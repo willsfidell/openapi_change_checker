@@ -97,11 +97,12 @@ def main() -> int:
             report = MarkdownReport(comparison, consumer_impacts)
             report_content = report.generate()
 
+            print(report_content)
             # Post to PR
-            reporter = GitHubPRReporter(
-                token=os.environ["GITHUB_TOKEN"], repo_name=args.repo
-            )
-            reporter.post_report(args.pr, report_content)
+            # reporter = GitHubPRReporter(
+            #     token=os.environ["GITHUB_TOKEN"], repo_name=args.repo
+            # )
+            # reporter.post_report(args.pr, report_content)
 
             return 0
 
