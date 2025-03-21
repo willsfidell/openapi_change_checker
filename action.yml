@@ -12,9 +12,6 @@ inputs:
   openapi_file:
     description: 'Path to static OpenAPI spec file (required if spec_source is static)'
     required: false
-  consumers_config:
-    description: 'Path to consumers configuration file'
-    required: false
   token:
     description: 'A Github token'
     required: true
@@ -49,6 +46,5 @@ runs:
           --spec-source ${{ inputs.spec_source || 'static' }} \
           --fastapi-app ${{ inputs.fastapi_app || '' }} \
           --openapi-file ${{ inputs.openapi_file || 'openapi.json' }} \
-          --consumers-config ${{ inputs.consumers_config || '' }} \
           --repo ${{ github.repository }} \
           --pr ${{ github.event.pull_request.number }}
