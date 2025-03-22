@@ -1,5 +1,6 @@
-from typing import Dict, List, Set, Tuple, NamedTuple
+from typing import Dict, List, Tuple, NamedTuple
 from openapi3 import OpenAPI
+from openapi3.paths import Response
 
 class Endpoint(NamedTuple):
     """Represents an API endpoint with its full details."""
@@ -13,15 +14,19 @@ class SpecComparison:
 
     def __init__(self, current_spec: Dict, previous_spec: Dict):
         """Initialize with two OpenAPI specifications to compare."""
+
         self.current_spec = OpenAPI(current_spec)
         self.previous_spec = OpenAPI(previous_spec)
+
         self.current_endpoints = self._get_endpoints(self.current_spec)
         self.previous_endpoints = self._get_endpoints(self.previous_spec)
 
     def _get_endpoints(self, spec: OpenAPI) -> List[Endpoint]:
         """Extract all endpoints with their details from a specification."""
+
         endpoints = []
         for path, path_item in spec.paths.items():
+
             # Common HTTP methods in OpenAPI
             methods = ['get', 'post', 'put', 'delete', 'patch', 'head', 'options', 'trace']
             for method in methods:
@@ -35,9 +40,14 @@ class SpecComparison:
                         parameters.extend(operation.parameters or [])
                     
                     # Get responses
-                    responses = {}
+                    responses = []
                     if hasattr(operation, 'responses'):
-                        responses = operation.responses or {}
+                        for r, r_item in operation.responses.items():
+                            if isinstance(r_item, Response):
+                                schema = r_item.content['application/json'].schema
+                                re = r_item.raw_element
+                                re['properties'] = schema.raw_element
+                                responses.append({r: re})
 
                     endpoints.append(Endpoint(
                         path=path,
@@ -52,7 +62,6 @@ class SpecComparison:
         return (endpoint.path, endpoint.method)
 
     def _format_parameters(self, parameters: list) -> List[Dict]:
-        """Format OpenAPI parameters into a standardized dictionary format."""
         formatted = []
         for param in parameters:
             formatted.append({
