@@ -86,6 +86,7 @@ class FastAPISpecHandler(SpecHandler):
 
             # Construct the full path in the temp directory
             temp_app_path = temp_dir / self.app_path
+            print(f"app_path {self.app_path}")
             print(f"temp_app_path {temp_app_path}")
 
             if not temp_app_path.exists():
