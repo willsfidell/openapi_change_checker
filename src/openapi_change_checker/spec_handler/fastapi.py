@@ -30,9 +30,9 @@ class FastAPISpecHandler(SpecHandler):
 
     def _load_fastapi_app(self, app_path: Optional[Path] = None):
 
-        print(app_path)
+        print(f"app {app_path}")
         path_to_load = app_path or self.app_path
-        print(path_to_load)
+        print(f"path_toload {path_to_load}")
         try:
             # Add the app's directory to sys.path
             sys.path.insert(0, str(path_to_load.parent))
@@ -72,19 +72,21 @@ class FastAPISpecHandler(SpecHandler):
 
     def get_previous_spec(self, pr_number: int) -> Optional[Dict]:
 
+        print('previous')
         reporter = GitHubPRReporter(self.github_token, self.repo_name)
 
         try:
             # Create a temporary directory with UUID
             temp_dir = Path(tempfile.gettempdir()) / f"fastapi-spec-{uuid.uuid4()}"
             temp_dir.mkdir(exist_ok=True)
+            print(f"Temp dir {temp_dir}")
 
             # Check out the complete base branch into the temp directory
             reporter.checkout_base_branch(str(temp_dir))
 
             # Construct the full path in the temp directory
             temp_app_path = temp_dir / self.app_path
-            print(f"{temp_app_path}")
+            print(f"temp_app_path {temp_app_path}")
 
             if not temp_app_path.exists():
                 return None
