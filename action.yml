@@ -36,7 +36,7 @@ runs:
     - name: Show me the money
       shell: bash
       run: |
-        ls -la
+        cat ./main.py
     - name: Check OpenAPI changes
       shell: bash
       env:
