@@ -72,11 +72,11 @@ class FastAPISpecHandler(SpecHandler):
 
         reporter = GitHubPRReporter(self.github_token, self.repo_name)
 
-        # Create a temporary directory with UUID
-        temp_dir = Path(tempfile.gettempdir()) / f"fastapi-spec-{uuid.uuid4()}"
-        temp_dir.mkdir(exist_ok=True)
-
         try:
+            # Create a temporary directory with UUID
+            temp_dir = Path(tempfile.gettempdir()) / f"fastapi-spec-{uuid.uuid4()}"
+            temp_dir.mkdir(exist_ok=True)
+
             # Check out the complete base branch into the temp directory
             reporter.checkout_base_branch(str(temp_dir))
 
@@ -89,6 +89,7 @@ class FastAPISpecHandler(SpecHandler):
             # Load the app and get spec
             app = self._load_fastapi_app(temp_app_path)
             spec = app.openapi()
+            print(spec)
 
             if not self.validate_spec(spec):
                 return None
