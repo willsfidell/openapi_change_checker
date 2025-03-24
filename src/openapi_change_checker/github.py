@@ -51,6 +51,7 @@ class GitHubPRReporter:
             
             # Get the default branch name
             default_branch = self.repo.default_branch
+            print(f"Default: {default_branch}")
             
             # Clone the repository and checkout the base branch
             subprocess.run(
