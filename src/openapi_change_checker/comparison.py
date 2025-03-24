@@ -20,7 +20,6 @@ class SpecComparison:
 
         self.current_endpoints = self._get_endpoints(self.current_spec)
         print(self.current_endpoints)
-        print('\n\n')
         self.previous_endpoints = self._get_endpoints(self.previous_spec)
         print(self.previous_endpoints)
 

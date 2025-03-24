@@ -30,7 +30,9 @@ class FastAPISpecHandler(SpecHandler):
 
     def _load_fastapi_app(self, app_path: Optional[Path] = None):
 
+        print(app_path)
         path_to_load = app_path or self.app_path
+        print(path_to_load)
         try:
             # Add the app's directory to sys.path
             sys.path.insert(0, str(path_to_load.parent))
@@ -82,6 +84,7 @@ class FastAPISpecHandler(SpecHandler):
 
             # Construct the full path in the temp directory
             temp_app_path = temp_dir / self.app_path
+            print(f"{temp_app_path}")
 
             if not temp_app_path.exists():
                 return None
